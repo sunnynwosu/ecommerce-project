@@ -14,5 +14,5 @@ variable "aks_cluster_name" {
 
 
 variable "acr_name" {
-    default = "ecommerceacr"
+    default = "ecommerceacr190425"
 }

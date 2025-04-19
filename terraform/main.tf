@@ -20,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "ecommerce_aks" {
     default_node_pool {
     name       = "default"
     node_count = 2
-    vm_size    = "Standard_D2_v2"
+    vm_size    = "standard_d2_v3"
   }
 
   identity {
@@ -33,3 +33,4 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
     role_definition_name = "AcrPull"
     scope = azurerm_container_registry.acr.id 
 }
+
