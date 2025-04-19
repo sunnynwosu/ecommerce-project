@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ecommerce-backend
+  name: ecommerce-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-backend
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ecommerce-backend
+    spec:
+      containers:
+      - image: ecommerceacr190425.azurecr.io/ecommerce-backend:v1
+        name: ecommerce-backend
+        resources: {}
+status: {}
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ecommerce-backend
+  name: ecommerce-backend-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: ecommerce-backend
+  type: LoadBalancer
+status:
+  loadBalancer: {}
