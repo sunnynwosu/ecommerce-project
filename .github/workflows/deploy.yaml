@@ -23,7 +23,11 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-   
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Terraform Init
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
