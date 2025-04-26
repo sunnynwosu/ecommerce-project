@@ -34,7 +34,13 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        run: terraform init
+        run: |
+          terraform init \
+          -backend-config="storage_account_name=ecommtfstate1745018613" \
+          -backend-config="container_name=tfstate" \
+          -backend-config="key=prod.tfstate" \
+          -backend-config="resource_group_name=ecommerce-tfstate-rg" \
+          -backend-config="access_key=$ARM_ACCESS_KEY"
         working-directory: ./terraform
 
       - name: Terraform Plan
