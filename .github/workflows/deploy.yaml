@@ -76,3 +76,9 @@ jobs:
 
       - name: Deploy to AKS
         run: kubectl apply -f ./app/k8s/deployment.yaml
+
+      - name: Verify AKS Deployment
+        run: |
+          kubectl get pods -n default
+          kubectl get service -n default
+          kubectl get deployment -n default
