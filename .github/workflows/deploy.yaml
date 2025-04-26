@@ -66,8 +66,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:${{ github.sha }} ./app/backend
-          docker push ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:${{ github.sha }}
+          docker build -t ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:v1 ./app/backend
+          docker push ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:v1
         env:
           DOCKER_BUILDKIT: 1
 
