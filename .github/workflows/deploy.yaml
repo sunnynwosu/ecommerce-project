@@ -8,22 +8,36 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.5.0
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Terraform Init
-        run: terraform init
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+        run: |
+          terraform init \
+          -backend-config="storage_account_name=ecommtfstate1745018613" \
+          -backend-config="container_name=tfstate" \
+          -backend-config="key=prod.tfstate" \
+          -backend-config="resource_group_name=ecommerce-tfstate-rg" \
+          -backend-config="access_key=$ARM_ACCESS_KEY"
         working-directory: ./terraform
 
       - name: Terraform Plan
@@ -51,8 +65,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:${{ github.sha }} ./app/ecommerce-backend
-          docker push ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:$v1
+          docker build -t ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:v1 ./app/backend
+          docker push ${{ secrets.ACR_REGISTRY }}.azurecr.io/ecommerce-backend:v1
         env:
           DOCKER_BUILDKIT: 1
 
@@ -61,3 +75,8 @@ jobs:
 
       - name: Deploy to AKS
         run: kubectl apply -f ./app/k8s/deployment.yaml
+
+      - name: Verify AKS Deployment
+        run: |
+          kubectl get pods -n default
+          kubectl get service -n default
