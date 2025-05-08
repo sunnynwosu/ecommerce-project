@@ -8,11 +8,11 @@ The Flask app in `app/backend/app.py` provides two endpoints:
 
 **The project supports manual deployment (Terraform, Docker, kubectl) and automated deployment (GitHub Actions), serving as a scalable e-commerce backend.**
 
-### **Cloud-Native Deployment Workflow**
 ![Cloud-Native Deployment Workflow](./cloud-native-workflow.png)
 This diagram illustrates the CI/CD pipeline using GitHub Actions, Terraform, Azure Kubernetes Service (AKS), and Azure Container Registry (ACR).
 
 ### 🧰 **Tech Stack**
+
 - Terraform — Infrastructure as Code
 - Azure Kubernetes Service (AKS) — Container Orchestration
 - Azure Container Registry (ACR) — Private Docker Registry
@@ -21,6 +21,7 @@ This diagram illustrates the CI/CD pipeline using GitHub Actions, Terraform, Azu
 - Flask — Lightweight Web Framework (Python)
 
 ### **Project Structure**
+
 <details>
 <summary>View Layout</summary>
 
@@ -47,6 +48,7 @@ This diagram illustrates the CI/CD pipeline using GitHub Actions, Terraform, Azu
 </details>
 
 ### ✅**Pre-Requisites**
+
 - Azure account with subscription
 - Azure CLI
 - Terraform installed
@@ -57,18 +59,29 @@ This diagram illustrates the CI/CD pipeline using GitHub Actions, Terraform, Azu
 - VS Code (recommended)
 
 
-**Azure Setup Steps**
+### 💻🔧**Azure Setup Steps**
+
 - Log in to Azure: `az login`.
 - Set up Azure Service Principal
+
 (Recommended for Terraform and GitHub Actions authentication)
-`az ad sp create-for-rbac --name "ecommerce-sp" --role="User Access Administrator" --scopes="/subscriptions/<your-subscription-id>"`
+```bash
+az ad sp create-for-rbac --name "ecommerce-sp" --role="User Access Administrator" --scopes="/subscriptions/<your-subscription-id>"
+```
 Save the output (client ID, client secret, subscription ID, tenant ID) for GitHub secrets.
 
 **Backend Configuration**
+
 This project uses Azure Storage Account for Terraform remote state management.
+
 Since Storage Account names must be globally unique, you have two options:
 - Create your own backend:
+
 Create a Storage Account and blob container in Azure.
+
+<details>
+<summary>View Details</summary>
+
 ```text
 RESOURCE_GROUP="ecommerce-tfstate-rg"
 STORAGE_ACCOUNT="youruniquestorageacctname"
@@ -79,6 +92,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 az storage account create --name $STORAGE_ACCOUNT --resource-group $RESOURCE_GROUP --location $LOCATION --sku Standard_LRS
 az storage container create --name $CONTAINER --account-name $STORAGE_ACCOUNT
 ```
+</details>
 
 Save the storage account name and generate a key:
 ```bash
@@ -86,11 +100,14 @@ STORAGE_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --ac
 ```
 **OR**
 - Use local backend for testing:
+
 `Comment out or remove backend.tf.`
+
 Terraform will default to a local terraform.tfstate file.
 
 
 ### 🔧 **Manual Deployment**
+
 Follow these steps to manually deploy the backend to AKS using Terraform, Docker, and kubectl.
 
 1. **Fork and Clone the Repository**
@@ -173,16 +190,17 @@ terraform destroy
 ```
 
 ### 🚀 GitHub Actions Deployment
+
 GitHub Actions automates Docker image builds and AKS deployments upon push to the main branch.
 
 1. **Fork the Repository**
 If you haven’t already, fork this repository to your own GitHub account to enable GitHub Actions in your context.
 
 2. **Configure Github Secrets**
-In your forked repository, navigate to
-```sql
-Settings → Secrets and variables → Actions → New repository secret
-```
+In your forked repository, navigate to:
+
+`Settings → Secrets and variables → Actions → New repository secret`
+
 Add the following secrets
 ```markdown 
 | Secret Name              | Description (Secret)                           |
