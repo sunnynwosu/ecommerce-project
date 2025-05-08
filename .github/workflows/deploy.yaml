@@ -25,12 +25,6 @@ jobs:
           terraform_version: 1.5.0
 
       - name: Terraform Init
-        env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
         run: |
           terraform init \
           -backend-config="storage_account_name=ecommtfstate1745018613" \
@@ -78,5 +72,5 @@ jobs:
 
       - name: Verify AKS Deployment
         run: |
-          kubectl get pods -n default
-          kubectl get service -n default
+          kubectl get pods
+          kubectl get service
